@@ -1,9 +1,10 @@
-import { useContext, useRef, useState } from "react";
-import { authenticate } from "../functions/login-utils";
-import { AuthContext } from "../functions/auth-utils";
+import { useRef, useState, useEffect} from "react";
+import { authenticate, isAuthenticatedAtLogin } from "../functions/login-utils";
+import { AuthContext, useAuth } from "../functions/auth-utils";
 import { ErrorBoundary } from "react-error-boundary";
 import LoginErrorFallback from "./LoginErrorFallback";
 import { useNavigate } from "react-router";
+
 
 function Login() {
     const usernameInput = useRef(null);
@@ -11,7 +12,11 @@ function Login() {
     const [error, setError] = useState(null);
     const [invalid, setInvalid] = useState(null);
     const navigate = useNavigate();
-    const { setUser } =  useContext(AuthContext);
+    const { user, setUser } =  useAuth();
+    console.log(user)
+    useEffect(() => {
+        isAuthenticatedAtLogin(user, navigate, setUser);
+    }, [user, navigate, setUser])
 
     const login = (event) => {
         event.preventDefault();
